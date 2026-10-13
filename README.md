@@ -42,6 +42,8 @@ These are reproducible results for this dataset and seed (`42`), not estimates o
 
 The apparent drop is not a like-for-like estimate of the same population: the cohort, class prevalence, and feature set all change. Its value is as an artifact check. In the matched test set, the selected threshold delivered **89.4% precision**, below the 90% target observed on validation. The threshold is therefore a study operating point, not a guaranteed service level.
 
+Both seed-42 experiments were reproduced from the locked environment on 13 October 2026. The displayed metrics match the new runs at the table's rounding precision, and all four pipeline tests pass. Inspect the aggregate [matched-root result](results/seed-42/matched-root.json), [all-URLs result](results/seed-42/all.json), and [run manifest](results/seed-42/manifest.json) for full metrics, dataset hashes, implementation revision, and dependency versions. Only aggregate results and run metadata are committed; raw URLs and serialized models remain local and ignored.
+
 ## Limits
 
 - The source has no collection timestamps, so this experiment cannot test future campaigns or concept drift.
@@ -49,3 +51,18 @@ The apparent drop is not a like-for-like estimate of the same population: the co
 - The source has far more phishing URLs than normal traffic is likely to have. Precision will change when prevalence changes.
 - Model scores are not calibrated probabilities of a site being malicious.
 - Do not use this experiment to decide whether a URL is safe to open.
+
+## Future development roadmap
+
+These are planned extensions rather than current capabilities. This README is the development backlog for future work; preserve the simple baseline and evaluate each extension under the same protocol before changing the study's claims.
+
+| Priority | Potential | Next deliverable | Completion evidence |
+| --- | --- | --- | --- |
+| P0 | Inspectable, reproducible experiments | Aggregate seed-42 results and their run manifest are now saved under `results/seed-42/`. Next, add an automated test workflow using the lockfile and a script that compares a fresh run to the saved aggregates. | A fresh checkout can run the documented commands and match the saved aggregate metrics within declared tolerances; no dataset rows or serialized models are committed. |
+| P1 | Stronger generalization checks | Evaluate multiple seeds and group related hosts by registrable domain. Add a separately licensed, timestamped dataset for a future-campaign holdout when suitable data is available. | Domain-disjoint split tests, uncertainty intervals, subgroup error analysis, and a separate temporal result. The current dataset has no collection dates and cannot supply this temporal evidence. |
+| P1 | Calibrated and operationally useful scores | Compare calibration methods using training/validation data, then report calibration and precision/recall at fixed thresholds on the held-out test set. Analyze several explicitly stated phishing prevalences. | Reliability plots, Brier/calibration metrics, alert counts, confidence intervals, and an explicit report of whether a validation precision target holds on test. Do not tune against the test results. |
+| P2 | Explainable triage | Show which URL-string features contribute to an experimental score, along with the model version, limitations, and an uncertain/out-of-scope state. | Examples using reserved synthetic domains, consistency tests, and explanations that describe model behavior without claiming that a feature proves malicious intent. Scoring still must not visit the URL. |
+| P2 | Additional AI models | Compare character/subword URL models or additional ensembles with logistic regression and histogram gradient boosting. Keep the same data hygiene, domain grouping, and validation-only selection. | A controlled comparison of quality, calibration, inference latency, memory, and failure cases; retain the simpler model unless an extension demonstrates a useful improvement. |
+| P3 | Drift monitoring and a bounded scoring interface | Explore batch scoring or a local API with input limits, provenance, metrics, and drift checks against explicitly approved data. Keep automatic browser navigation and blocking outside the initial scope. | Tests for malformed input and resource bounds, distribution-shift reports, and documented retention/access controls. A live service requires separate deployment validation. |
+
+**Next milestone:** automate the already reproduced seed-42 checks, then add multi-seed and registrable-domain evaluation. All public experiments should use independently licensed public or synthetic data; private assessment material is outside this project's release scope.

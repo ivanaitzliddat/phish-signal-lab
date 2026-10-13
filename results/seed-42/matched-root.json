@@ -1,0 +1,66 @@
+{
+  "source": "UCI PhiUSIIL Phishing URL (Website), dataset 967; URL and label columns only",
+  "cohort": "matched-root",
+  "cohort_counts": {
+    "all_legitimate": 134850,
+    "all_phishing": 100520,
+    "https_root_legitimate": 134850,
+    "https_root_phishing": 28489
+  },
+  "seed": 42,
+  "hygiene": {
+    "raw_rows": 235795,
+    "conflicting_label_rows_removed": 0,
+    "unique_urls": 235370
+  },
+  "split": {
+    "method": "exact hostname grouped; no hostname shared across train, validation, test",
+    "train_rows": 98006,
+    "validation_rows": 32665,
+    "test_rows": 32668,
+    "train_hosts": 97752,
+    "validation_hosts": 32584,
+    "test_hosts": 32585
+  },
+  "model": "histogram_gradient_boosting",
+  "validation_average_precision_by_model": {
+    "logistic_regression": 0.9133246669700983,
+    "histogram_gradient_boosting": 0.9350196263753736
+  },
+  "validation_precision_target": 0.9,
+  "validation_precision_target_met": true,
+  "threshold_selected_on_validation": 0.31342930361277016,
+  "validation": {
+    "rows": 32665,
+    "phishing_prevalence": 0.17437624368590235,
+    "average_precision": 0.9350196263753736,
+    "roc_auc": 0.964717068385008,
+    "precision": 0.9013097214536063,
+    "recall": 0.8577949438202247,
+    "tn": 26434,
+    "fp": 535,
+    "fn": 810,
+    "tp": 4886
+  },
+  "test": {
+    "rows": 32668,
+    "phishing_prevalence": 0.17096240969756338,
+    "average_precision": 0.9354564230045975,
+    "roc_auc": 0.9653252637511975,
+    "precision": 0.8938069555514228,
+    "recall": 0.8605192479856759,
+    "tn": 26512,
+    "fp": 571,
+    "fn": 779,
+    "tp": 4806
+  },
+  "test_prior_baseline_average_precision": 0.17096240969756338,
+  "limitations": [
+    "The dataset has a collection artifact: all legitimate URLs are HTTPS site roots, while many phishing URLs are not.",
+    "Even the matched cohort may contain source or campaign artifacts; it is not a live-traffic sample.",
+    "Exact-host grouping does not prevent related subdomains or campaigns crossing partitions.",
+    "No collection dates are supplied, so temporal generalization is not measured.",
+    "Scores are model outputs, not calibrated real-world fraud probabilities.",
+    "This is a URL-only triage experiment, not a browser safety or blocking service."
+  ]
+}
